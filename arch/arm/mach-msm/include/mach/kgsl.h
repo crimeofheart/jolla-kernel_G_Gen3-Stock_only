@@ -21,7 +21,13 @@
 #define KGSL_CLK_MEM_IFACE 0x00000010
 #define KGSL_CLK_AXI	0x00000020
 
+// jollaman999
+// GPU Overclock
+#ifdef CONFIG_GPU_OVERCLOCK
+#define KGSL_MAX_PWRLEVELS 7
+#else
 #define KGSL_MAX_PWRLEVELS 5
+#endif /* CONFIG_GPU_OVERCLOCK */
 
 #define KGSL_CONVERT_TO_MBPS(val) \
 	(val*1000*1000U)
