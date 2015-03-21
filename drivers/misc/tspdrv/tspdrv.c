@@ -274,7 +274,9 @@ int __init tspdrv_init(void)
 
 void __exit tspdrv_exit(void)
 {
+#ifdef CONFIG_TSPDRV_DEBUG
     DbgOut((KERN_INFO "tspdrv: cleanup_module.\n"));
+#endif
 
     DbgRecorderTerminate(());
 
@@ -293,7 +295,9 @@ void __exit tspdrv_exit(void)
 
 static int open(struct inode *inode, struct file *file)
 {
+#ifdef CONFIG_TSPDRV_DEBUG
     DbgOut((KERN_INFO "tspdrv: open.\n"));
+#endif
 
     if (!try_module_get(THIS_MODULE)) return -ENODEV;
 
@@ -302,7 +306,9 @@ static int open(struct inode *inode, struct file *file)
 
 static int release(struct inode *inode, struct file *file)
 {
+#ifdef CONFIG_TSPDRV_DEBUG
     DbgOut((KERN_INFO "tspdrv: release.\n"));
+#endif
 
     /*
     ** Reset force and stop timer when the driver is closed, to make sure
@@ -539,21 +545,27 @@ static int suspend(struct platform_device *pdev, pm_message_t state)
     }
     else
     {
+#ifdef CONFIG_TSPDRV_DEBUG
         DbgOut((KERN_INFO "tspdrv: suspend.\n"));
+#endif
         return 0;
     }
 }
 
 static int resume(struct platform_device *pdev)
 {
+#ifdef CONFIG_TSPDRV_DEBUG
     DbgOut((KERN_INFO "tspdrv: resume.\n"));
+#endif
 
 	return 0;   /* can resume */
 }
 
 static void platform_release(struct device *dev)
 {
+#ifdef CONFIG_TSPDRV_DEBUG
     DbgOut((KERN_INFO "tspdrv: platform_release.\n"));
+#endif
 }
 
 module_init(tspdrv_init);

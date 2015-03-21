@@ -1,0 +1,20 @@
+#
+# Immersion Touchsense vibrator
+#
+
+menu "Immersion Touchsense vibrator"
+
+config TSPDRV
+	bool "Immersion Touchsense vibrator support"
+	help
+	  This option enables device driver support for Immersion Touchsense
+	  vibrator.
+
+config TSPDRV_DEBUG
+	bool "Immersion Touchsense vibrator debug option"
+	depends on TSPDRV
+	default n
+	help
+	  Enable debug messages of Immersion Touchsense vibrator driver.
+
+endmenu

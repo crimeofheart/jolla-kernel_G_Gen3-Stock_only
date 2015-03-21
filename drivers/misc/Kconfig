@@ -703,12 +703,6 @@ config BU52031NVX_POUCHDETECT
 	help
 	  depends on BU52031NVX
 
-# 120215 younghan.kim@lge.com Porting Immersion Vib[S]
-config TSPDRV
-    bool "tspdrv"
-        default n
-# 120215 younghan.kim@lge.com Porting Immersion Vib[E]
-
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"
 source "drivers/misc/cb710/Kconfig"
@@ -718,5 +712,6 @@ source "drivers/misc/lis3lv02d/Kconfig"
 source "drivers/misc/carma/Kconfig"
 source "drivers/misc/altera-stapl/Kconfig"
 source "drivers/misc/slimport_anx7808/Kconfig"
+source "drivers/misc/tspdrv/Kconfig"
 
 endmenu
