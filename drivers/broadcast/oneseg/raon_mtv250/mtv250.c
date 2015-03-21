@@ -729,7 +729,7 @@ static int mtv250_ioctl(struct inode *inode, struct file *filp,
 			break;
 
 		case IOCTL_ISDBT_STOP_TS:
-			rtvISDBT_DisableStreamOut();
+			rtvISDBT_DisableStreamOut();
 			mtv250_reset_tsp();
 			break;
 
