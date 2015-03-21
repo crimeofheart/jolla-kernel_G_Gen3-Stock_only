@@ -113,9 +113,9 @@ static int update_cpu_max_freq(struct cpufreq_policy *cpu_policy,
 	ret = cpufreq_update_policy(cpu);
 	if (!ret)
 		pr_debug("dynamic_thermal: Setting CPU%d max frequency to %d\n",
-				 cpu, max_freq);
+								cpu, max_freq);
 
-		cpufreq_max_changed_by_user = false;
+	cpufreq_max_changed_by_user = false;
 	cpufreq_max_changed_by_msm_thermal = true;
 
 	return ret;
@@ -417,7 +417,7 @@ show_one(poll_ms, poll_ms);
 show_one(dynamic_thermal_control, dynamic_thermal_control);
 
 static ssize_t store_shutdown_temp(struct kobject *a, struct attribute *b,
-								   const char *buf, size_t count)
+					const char *buf, size_t count)
 {
 	unsigned int input;
 	int ret;
@@ -431,7 +431,7 @@ static ssize_t store_shutdown_temp(struct kobject *a, struct attribute *b,
 }
 
 static ssize_t store_allowed_max_high(struct kobject *a, struct attribute *b,
-									  const char *buf, size_t count)
+					const char *buf, size_t count)
 {
 	unsigned int input;
 	int ret;
@@ -445,7 +445,7 @@ static ssize_t store_allowed_max_high(struct kobject *a, struct attribute *b,
 }
 
 static ssize_t store_allowed_max_low(struct kobject *a, struct attribute *b,
-									 const char *buf, size_t count)
+					const char *buf, size_t count)
 {
 	unsigned int input;
 	int ret;
@@ -459,7 +459,7 @@ static ssize_t store_allowed_max_low(struct kobject *a, struct attribute *b,
 }
 
 static ssize_t store_allowed_max_freq(struct kobject *a, struct attribute *b,
-									  const char *buf, size_t count)
+					const char *buf, size_t count)
 {
 	unsigned int input;
 	int ret;
@@ -473,7 +473,7 @@ static ssize_t store_allowed_max_freq(struct kobject *a, struct attribute *b,
 }
 
 static ssize_t store_allowed_mid_high(struct kobject *a, struct attribute *b,
-									  const char *buf, size_t count)
+					const char *buf, size_t count)
 {
 	unsigned int input;
 	int ret;
@@ -487,7 +487,7 @@ static ssize_t store_allowed_mid_high(struct kobject *a, struct attribute *b,
 }
 
 static ssize_t store_allowed_mid_low(struct kobject *a, struct attribute *b,
-									 const char *buf, size_t count)
+					const char *buf, size_t count)
 {
 	unsigned int input;
 	int ret;
@@ -501,7 +501,7 @@ static ssize_t store_allowed_mid_low(struct kobject *a, struct attribute *b,
 }
 
 static ssize_t store_allowed_mid_freq(struct kobject *a, struct attribute *b,
-									  const char *buf, size_t count)
+					const char *buf, size_t count)
 {
 	unsigned int input;
 	int ret;
@@ -515,7 +515,7 @@ static ssize_t store_allowed_mid_freq(struct kobject *a, struct attribute *b,
 }
 
 static ssize_t store_allowed_low_high(struct kobject *a, struct attribute *b,
-									  const char *buf, size_t count)
+					const char *buf, size_t count)
 {
 	unsigned int input;
 	int ret;
@@ -529,7 +529,7 @@ static ssize_t store_allowed_low_high(struct kobject *a, struct attribute *b,
 }
 
 static ssize_t store_allowed_low_low(struct kobject *a, struct attribute *b,
-									 const char *buf, size_t count)
+					const char *buf, size_t count)
 {
 	unsigned int input;
 	int ret;
@@ -543,7 +543,7 @@ static ssize_t store_allowed_low_low(struct kobject *a, struct attribute *b,
 }
 
 static ssize_t store_allowed_low_freq(struct kobject *a, struct attribute *b,
-									  const char *buf, size_t count)
+					const char *buf, size_t count)
 {
 	unsigned int input;
 	int ret;
@@ -557,7 +557,7 @@ static ssize_t store_allowed_low_freq(struct kobject *a, struct attribute *b,
 }
 
 static ssize_t store_poll_ms(struct kobject *a, struct attribute *b,
-							 const char *buf, size_t count)
+				const char *buf, size_t count)
 {
 	unsigned int input;
 	int ret;
@@ -571,7 +571,7 @@ static ssize_t store_poll_ms(struct kobject *a, struct attribute *b,
 }
 
 static ssize_t store_dynamic_thermal_control(struct kobject *a, struct attribute *b,
-							 const char *buf, size_t count)
+						const char *buf, size_t count)
 {
 	if (buf[0] == '0' && buf[1] == '\n')
 		msm_thermal_info.dynamic_thermal_control = 0;
@@ -705,7 +705,8 @@ int __devinit msm_thermal_init(struct msm_thermal_data *pdata)
 	memcpy(&msm_thermal_info, pdata, sizeof(struct msm_thermal_data));
 
 	enabled = 1;
-	table_loaded = false;	 check_temp_workq=alloc_workqueue("dynamic_thermal", WQ_UNBOUND | WQ_RESCUER, 1);
+	table_loaded = false;
+	check_temp_workq=alloc_workqueue("dynamic_thermal", WQ_UNBOUND | WQ_RESCUER, 1);
 	if (!check_temp_workq)
 		BUG_ON(ENOMEM);
 	INIT_DELAYED_WORK(&check_temp_work, check_temp);
@@ -721,8 +722,7 @@ int __devinit msm_thermal_init(struct msm_thermal_data *pdata)
 		if (rc) {
 			pr_warn("dynamic_thermal: sysfs: ERROR, could not create sysfs group");
 		}
-		rc = sysfs_create_group(msm_thermal_kobject,
-								&msm_thermal_stats_attr_group);
+		rc = sysfs_create_group(msm_thermal_kobject, &msm_thermal_stats_attr_group);
 		if (rc) {
 			pr_warn("dynamic_thermal: sysfs: ERROR, could not create sysfs stats group");
 		}
