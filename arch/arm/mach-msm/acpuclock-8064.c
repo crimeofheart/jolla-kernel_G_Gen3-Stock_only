@@ -112,13 +112,6 @@ static struct msm_bus_paths bw_level_tbl[] __initdata = {
 	[3] = BW_MBPS(2128), /* At least 266 MHz on bus. */
 	[4] = BW_MBPS(3200), /* At least 400 MHz on bus. */
 	[5] = BW_MBPS(4264), /* At least 533 MHz on bus. */
-// jollaman999
-// GPU Overclock
-#ifdef CONFIG_GPU_OVERCLOCK
-	[6] = BW_MBPS(4660), /* At least 583 MHz on bus. */
-	[7] = BW_MBPS(4800), /* At least 600 MHz on bus. */
-	[8] = BW_MBPS(4960), /* At least 620 MHz on bus. */
-#endif /* CONFIG_GPU_OVERCLOCK */
 };
 
 static struct msm_bus_scale_pdata bus_scale_data __initdata = {
@@ -452,8 +445,6 @@ static struct acpu_level tbl_PVS6_2000MHz_factory_1026[] __initdata = {
 
 #endif //CONFIG_LGE_PM
 static struct acpu_level tbl_slow[] __initdata = {
-	{ 1, {    81000, HFPLL, 2, 0x06 }, L2(0),   750000 },
-	{ 1, {   162000, HFPLL, 2, 0x0C }, L2(0),   875000 },
 	{ 1, {   270000, HFPLL, 2, 0x14 }, L2(0),   900000 },
 	{ 1, {   384000, PLL_8, 0, 0x00 }, L2(1),   925000 },
 	{ 0, {   432000, HFPLL, 2, 0x20 }, L2(6),   975000 },
@@ -482,16 +473,11 @@ static struct acpu_level tbl_slow[] __initdata = {
 	{ 1, {  1620000, HFPLL, 1, 0x3C }, L2(16), 1300000 },
 	{ 1, {  1674000, HFPLL, 1, 0x3E }, L2(16), 1325000 },
 	{ 1, {  1728000, HFPLL, 1, 0x40 }, L2(16), 1350000 },
-	{ 1, {  1782000, HFPLL, 1, 0x42 }, L2(16), 1375000 },
-	{ 1, {  1836000, HFPLL, 1, 0x44 }, L2(16), 1400000 },
-	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(16), 1425000 },
 #endif /* CONFIG_CPU_OVERCLOCK */
 	{ 0, { 0 } }
 };
 
 static struct acpu_level tbl_nom[] __initdata = {
-	{ 1, {    81000, HFPLL, 2, 0x06 }, L2(0),   750000 },
-	{ 1, {   162000, HFPLL, 2, 0x0C }, L2(0),   825000 },
 	{ 1, {   270000, HFPLL, 2, 0x14 }, L2(0),   850000 },
 	{ 1, {   384000, PLL_8, 0, 0x00 }, L2(1),   875000 },
 	{ 0, {   432000, HFPLL, 2, 0x20 }, L2(6),   925000 },
@@ -520,16 +506,11 @@ static struct acpu_level tbl_nom[] __initdata = {
 	{ 1, {  1620000, HFPLL, 1, 0x3C }, L2(16), 1250000 },
 	{ 1, {  1674000, HFPLL, 1, 0x3E }, L2(16), 1275000 },
 	{ 1, {  1728000, HFPLL, 1, 0x40 }, L2(16), 1300000 },
-	{ 1, {  1782000, HFPLL, 1, 0x42 }, L2(16), 1325000 },
-	{ 1, {  1836000, HFPLL, 1, 0x44 }, L2(16), 1350000 },
-	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(16), 1375000 },
 #endif /* CONFIG_CPU_OVERCLOCK */
 	{ 0, { 0 } }
 };
 
 static struct acpu_level tbl_fast[] __initdata = {
-	{ 1, {    81000, HFPLL, 2, 0x06 }, L2(0),   750000 },
-	{ 1, {   162000, HFPLL, 2, 0x0C }, L2(0),   775000 },
 	{ 1, {   270000, HFPLL, 2, 0x14 }, L2(0),   800000 },
 	{ 1, {   384000, PLL_8, 0, 0x00 }, L2(1),   825000 },
 	{ 0, {   432000, HFPLL, 2, 0x20 }, L2(6),   875000 },
@@ -558,16 +539,11 @@ static struct acpu_level tbl_fast[] __initdata = {
 	{ 1, {  1620000, HFPLL, 1, 0x3C }, L2(16), 1200000 },
 	{ 1, {  1674000, HFPLL, 1, 0x3E }, L2(16), 1225000 },
 	{ 1, {  1728000, HFPLL, 1, 0x40 }, L2(16), 1250000 },
-	{ 1, {  1782000, HFPLL, 1, 0x42 }, L2(16), 1275000 },
-	{ 1, {  1836000, HFPLL, 1, 0x44 }, L2(16), 1300000 },
-	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(16), 1325000 },
 #endif /* CONFIG_CPU_OVERCLOCK */
 	{ 0, { 0 } }
 };
 
 static struct acpu_level tbl_faster[] __initdata = {
-	{ 1, {    81000, HFPLL, 2, 0x06 }, L2(0),   750000 },
-	{ 1, {   162000, HFPLL, 2, 0x0C }, L2(0),   775000 },
 	{ 1, {   270000, HFPLL, 2, 0x14 }, L2(0),   800000 },
 	{ 1, {   384000, PLL_8, 0, 0x00 }, L2(1),   825000 },
 	{ 0, {   432000, HFPLL, 2, 0x20 }, L2(6),   875000 },
@@ -596,9 +572,6 @@ static struct acpu_level tbl_faster[] __initdata = {
 	{ 1, {  1620000, HFPLL, 1, 0x3C }, L2(16), 1150000 },
 	{ 1, {  1674000, HFPLL, 1, 0x3E }, L2(16), 1175000 },
 	{ 1, {  1728000, HFPLL, 1, 0x40 }, L2(16), 1200000 },
-	{ 1, {  1782000, HFPLL, 1, 0x42 }, L2(16), 1225000 },
-	{ 1, {  1836000, HFPLL, 1, 0x44 }, L2(16), 1250000 },
-	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(16), 1275000 },
 #endif /* CONFIG_CPU_OVERCLOCK */
 	{ 0, { 0 } }
 };

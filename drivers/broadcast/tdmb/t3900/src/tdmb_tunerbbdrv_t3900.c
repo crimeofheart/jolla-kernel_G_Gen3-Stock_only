@@ -436,7 +436,7 @@ int8 tunerbb_drv_t3900_multi_set_channel(int32 freq_num, uint8 subch_cnt, uint8 
 					return INC_ERROR;
 			}
 			memcpy(&stSubInfo.astSubChInfo[i], &ChInfo[i], sizeof(INC_CHANNEL_INFO));
-		}
+		}
 
 		stSubInfo.nSetCnt = subch_cnt;
 		INC_MULTI_SORT_INIT();
@@ -493,7 +493,7 @@ int8 tunerbb_drv_t3900_multi_set_channel(int32 freq_num, uint8 subch_cnt, uint8 
 				default:
 					return INC_ERROR;
 			}
-		}
+		}
 
 		g_stSubInfo.nSetCnt = subch_cnt;
 		INC_MULTI_SORT_INIT();

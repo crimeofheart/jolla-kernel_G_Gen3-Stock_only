@@ -179,7 +179,9 @@ static int vibrator_power_set(int enable)
 {
 	int rc = 0;
 	static struct regulator *vreg_l16 = NULL;
+#ifdef CONFIG_TSPDRV_DEBUG
 	int enabled = 0;
+#endif
 
 	if (unlikely(!vreg_l16)) {
 		vreg_l16 = regulator_get(NULL, "8921_l16"); /* 2.6 ~ 3V */
@@ -191,6 +193,7 @@ static int vibrator_power_set(int enable)
 		}
 	}
 
+#ifdef CONFIG_TSPDRV_DEBUG
 	/* fix the unbalanced disables */
 	enabled = regulator_is_enabled(vreg_l16);
 	if (enabled > 0) {
@@ -206,26 +209,23 @@ static int vibrator_power_set(int enable)
 	} else { /*  (enabled < 0) */
 		pr_warn("%s: regulator_is_enabled failed\n", __func__);
 	}
+#endif
 
 	//rc = regulator_set_voltage(vreg_l16, 3000000, 3000000);
 	rc = regulator_set_voltage(vreg_l16, 2800000, 2800000);
 
 	if(enable)
 	{
-//[AUDIO_BSP][Vibrator] gooyeon.jung@lge.com 2012-10-24 disable log [START]
-#if 1 //def EANBLE_LOG_VIB
+#ifdef CONFIG_TSPDRV_DEBUG
 		printk("vibrator_power_set() : vibrator enable\n");
-#endif	// #ifdef EANBLE_LOG_VIB
-//[AUDIO_BSP][Vibrator] gooyeon.jung@lge.com 2012-10-24 disable log [END]
+#endif
 		rc = regulator_enable(vreg_l16);
 	}
 	else
 	{
-//[AUDIO_BSP][Vibrator] gooyeon.jung@lge.com 2012-10-24 disable log [START]
-#if 1 //def EANBLE_LOG_VIB
+#ifdef CONFIG_TSPDRV_DEBUG
 		printk("vibrator_power_set() : vibrator disable\n");
-#endif	// #ifdef EANBLE_LOG_VIB
-//[AUDIO_BSP][Vibrator] gooyeon.jung@lge.com 2012-10-24 disable log [END]
+#endif
 		rc = regulator_disable(vreg_l16);
 	}
 
@@ -312,7 +312,9 @@ IMMVIBESPIAPI VibeStatus ImmVibeSPI_ForceOut_AmpDisable(VibeUInt8 nActuatorIndex
 
     if (g_bAmpEnabled)
     {
+#ifdef CONFIG_TSPDRV_DEBUG
         DbgOut((KERN_DEBUG "ImmVibeSPI_ForceOut_AmpDisable.\n"));
+#endif
 
         g_bAmpEnabled = false;
 
@@ -333,7 +335,9 @@ IMMVIBESPIAPI VibeStatus ImmVibeSPI_ForceOut_AmpEnable(VibeUInt8 nActuatorIndex)
 
     if (!g_bAmpEnabled)
     {
+#ifdef CONFIG_TSPDRV_DEBUG
         DbgOut((KERN_DEBUG "ImmVibeSPI_ForceOut_AmpEnable.\n"));
+#endif
 
         g_bAmpEnabled = true;
 
@@ -359,7 +363,9 @@ IMMVIBESPIAPI VibeStatus ImmVibeSPI_ForceOut_Initialize(void)
 	int gpio_motor_en = 0;
 	int gpio_motor_pwm = 0;
 
+#ifdef CONFIG_TSPDRV_DEBUG
     DbgOut((KERN_DEBUG "ImmVibeSPI_ForceOut_Initialize.\n"));
+#endif
 
     g_bAmpEnabled = true;   /* to force ImmVibeSPI_ForceOut_AmpDisable disabling the amp */
 
@@ -404,8 +410,9 @@ IMMVIBESPIAPI VibeStatus ImmVibeSPI_ForceOut_Initialize(void)
 */
 IMMVIBESPIAPI VibeStatus ImmVibeSPI_ForceOut_Terminate(void)
 {
-
+#ifdef CONFIG_TSPDRV_DEBUG
     DbgOut((KERN_DEBUG "ImmVibeSPI_ForceOut_Terminate.\n"));
+#endif
 
     /*
     ** Disable amp.

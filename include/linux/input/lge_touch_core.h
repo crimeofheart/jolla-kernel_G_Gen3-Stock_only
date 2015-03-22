@@ -28,11 +28,8 @@
 #define CUST_G_TOUCH
 #endif
 
-#if defined(CONFIG_MACH_APQ8064_GK_KR) || defined(CONFIG_MACH_APQ8064_GKATT) || defined(CONFIG_MACH_APQ8064_GKGLOBAL) || defined(CONFIG_MACH_APQ8064_OMEGAR_KR) || defined(CONFIG_MACH_APQ8064_OMEGA_KR) || defined(CONFIG_MACH_APQ8064_GV_KR)
+#if defined(CONFIG_MACH_APQ8064_GK_KR) || defined(CONFIG_MACH_APQ8064_GKATT) || defined(CONFIG_MACH_APQ8064_GKGLOBAL)
 #define PRESSURE_DIFF	/* pressure_diff_detection  */
-#define MULTI_GHOST_DETECT
-#define HOME_KEY_DETECTION
-//#define LCD_ON_GHOST
 #endif
 struct touch_device_caps
 {
@@ -436,9 +433,9 @@ enum{
 #define LGE_TOUCH_NAME		"lge_touch"
 
 /* Debug Mask setting */
-#define TOUCH_DEBUG_PRINT   (1)
+//#define TOUCH_DEBUG_PRINT   (1)
 #define TOUCH_ERROR_PRINT   (1)
-#define TOUCH_INFO_PRINT   	(1)
+//#define TOUCH_INFO_PRINT   	(1)
 
 #if defined(TOUCH_INFO_PRINT)
 #define TOUCH_INFO_MSG(fmt, args...) \
@@ -474,7 +471,5 @@ int touch_i2c_write_byte(struct i2c_client *client, u8 reg, u8 data);
 
 extern u32 touch_debug_mask;
 extern u32 touch_time_debug_mask;
-#if defined(CONFIG_MACH_APQ8064_GK_KR) || defined(CONFIG_MACH_APQ8064_GKATT) || defined(CONFIG_MACH_APQ8064_GKGLOBAL) || defined(CONFIG_MACH_APQ8064_OMEGAR_KR) || defined(CONFIG_MACH_APQ8064_OMEGA_KR) || defined(CONFIG_MACH_APQ8064_GV_KR)
-extern int z_30_num; /*multi ghost and home key ghost algorithm*/
-#endif
+
 #endif

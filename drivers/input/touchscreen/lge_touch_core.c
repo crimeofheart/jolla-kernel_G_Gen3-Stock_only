@@ -161,10 +161,8 @@ int ts_charger_plug = 0;
 int ts_charger_type = 0;
 static void safety_reset(struct lge_touch_data *ts);
 static int touch_ic_init(struct lge_touch_data *ts);
-#ifdef CUST_G_TOUCH_FREQ_HOPPING
 int cur_hopping_idx = 3;
 extern int cns_en;
-#endif
 static struct hrtimer hr_touch_trigger_timer;
 #define MS_TO_NS(x)	(x * 1E6L)
 
@@ -184,7 +182,7 @@ static enum hrtimer_restart touch_trigger_timer_handler(struct hrtimer *timer)
 void trigger_baseline_state_machine(int plug_in, int type)
 {
 	u8 buf=0;
-#ifdef CUST_G_TOUCH_FREQ_HOPPING
+#ifdef G_ONLY
 	extern u8 hopping;
 #endif
 
@@ -198,19 +196,20 @@ void trigger_baseline_state_machine(int plug_in, int type)
 					touch_i2c_read(touch_test_dev->client, 0x50, 1, &buf);
 					buf = buf & 0xDF;
 					touch_i2c_write_byte(touch_test_dev->client, 0x50, buf);
-#ifdef CUST_G_TOUCH_FREQ_HOPPING
+
 					cns_en = 0;
 					if(cur_hopping_idx != 3) cur_hopping_idx = 3;
 					safety_reset(touch_test_dev);
 					queue_delayed_work(touch_wq, &touch_test_dev->work_init,
 								msecs_to_jiffies(touch_test_dev->pdata->role->booting_delay));
+#ifdef G_ONLY
 					TOUCH_INFO_MSG("cur_hopping_idx [ %s ] = %x\n", __func__, cur_hopping_idx);
 #endif
 				} else if(plug_in ==1){
 					touch_i2c_read(touch_test_dev->client, 0x50, 1, &buf);
 					buf = buf | 0x20;
 					touch_i2c_write_byte(touch_test_dev->client, 0x50, buf);
-#ifdef CUST_G_TOUCH_FREQ_HOPPING
+#ifdef G_ONLY
 					touch_i2c_write_byte(touch_test_dev->client, 0xFF, 0x01);
 					touch_i2c_read(touch_test_dev->client, 0x0D, 1, &buf);
 
@@ -252,7 +251,7 @@ void trigger_baseline_state_machine(int plug_in, int type)
 int ghost_detect_solution(struct lge_touch_data *ts)
 {
 	extern u8 pressure_zero;
-#ifdef CUST_G_TOUCH_FREQ_HOPPING
+#ifdef G_ONLY
 	extern u8 hopping;
 #endif
 	int first_int_detection = 0;
@@ -294,7 +293,7 @@ int ghost_detect_solution(struct lge_touch_data *ts)
 		TOUCH_INFO_MSG("pressure\n");
 		ghost_detection = true;
 	}
-#ifdef CUST_G_TOUCH_FREQ_HOPPING
+#ifdef G_ONLY
 	if(hopping == 1) {
 		TOUCH_INFO_MSG("hopping\n");
 		ghost_detection = true;

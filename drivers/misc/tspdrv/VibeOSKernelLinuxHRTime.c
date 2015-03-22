@@ -204,10 +204,12 @@ static void VibeOSKernelLinuxStartTimer(void)
     ** (try to not being stuck here if the mutex is not freed for any reason)
     */
     res = down_interruptible(&g_hMutex);  /* wait for the mutex to be freed by the timer */
+#ifdef CONFIG_TSPDRV_DEBUG
     if (res != 0)
     {
         DbgOut((KERN_INFO "VibeOSKernelLinuxStartTimer: down_interruptible interrupted by a signal.\n"));
     }
+#endif
 }
 
 static void VibeOSKernelLinuxStopTimer(void)

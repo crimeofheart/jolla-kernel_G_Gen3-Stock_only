@@ -334,6 +334,8 @@ struct inodes_stat_t {
 #define FITRIM		_IOWR('X', 121, struct fstrim_range)	/* Trim */
 #define FS_IOC_SHUTDOWN	_IOR('X', 125, __u32)	/* Shutdown */
 
+#define FIDTRIM	_IOWR('f', 128, struct fstrim_range)	/* Deep discard trim */
+
 #define	FS_IOC_GETFLAGS			_IOR('f', 1, long)
 #define	FS_IOC_SETFLAGS			_IOW('f', 2, long)
 #define	FS_IOC_GETVERSION		_IOR('v', 1, long)
@@ -2087,6 +2089,7 @@ static inline int thaw_bdev(struct block_device *bdev, struct super_block *sb)
 }
 #endif
 extern int sync_filesystem(struct super_block *);
+extern void sync_filesystems(int wait);
 extern const struct file_operations def_blk_fops;
 extern const struct file_operations def_chr_fops;
 extern const struct file_operations bad_sock_fops;

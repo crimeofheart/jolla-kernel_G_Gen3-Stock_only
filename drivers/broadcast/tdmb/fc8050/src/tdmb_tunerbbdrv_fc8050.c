@@ -265,7 +265,7 @@ int tunerbb_drv_fc8050_fic_cb(uint32 userdata, uint8 *data, int length)
 	fic_buffer.length = length;
 	fic_buffer.valid = 1;
 
-	// FC8000 °ü·Ã codeÀÎ send_fic_int_sig_isr2task() in mbs_dshmain.c¸¦ »©´Ù º¸´Ï, ÇöÀç´Â polling ¹æ½ÄÀÌ³ª ÇâÈÄ ISR¹æ½ÄÀ¸·Î Àû¿ë½Ã ÇÊ¿äÇÏ¹Ç·Î feature¸¦ Ãß°¡ÇÔ
+	// FC8000 ê´€ë ¨ codeì¸ send_fic_int_sig_isr2task() in mbs_dshmain.cë¥¼ ë¹¼ë‹¤ ë³´ë‹ˆ, í˜„ì¬ëŠ” polling ë°©ì‹ì´ë‚˜ í–¥í›„ ISRë°©ì‹ìœ¼ë¡œ ì ìš©ì‹œ í•„ìš”í•˜ë¯€ë¡œ featureë¥¼ ì¶”ê°€í•¨
 #ifndef FEATURE_GET_FIC_POLLING
 	send_fic_int_sig_isr2task();
 #endif // FEATURE_GET_FIC_POLLING
@@ -320,7 +320,7 @@ int tunerbb_drv_fc8050_msc_cb(uint32 userdata, uint8 subChId, uint8 *data, int l
 	2010/05/31	MOBIT	prajuna		Removed test code
 	2010/06/09	MOBIT	prajuna		TDMB porting(KB3 Rev. A patch)
 	2010/07/15	MOBIT	prajuna		TDMB tuning for QSC
-	2010/07/16	MOBIT	somesoo		TDMB tuning for QSC with FCI ÃÖ±Ô¿ø °úÀå
+	2010/07/16	MOBIT	somesoo		TDMB tuning for QSC with FCI ìµœê·œì› ê³¼ì¥
 	2010/07/17	MOBIT	somesoo		TDMB porting(VG)
 	2010/08/19	MOBIT	prajuna		Code review
 	2010/09/10	MOBIT	prajuna		TDMB porting(Aloe)
@@ -366,7 +366,9 @@ int8	tunerbb_drv_fc8050_init(void)
 	if(res)
 	{
 		is_tdmb_probe = 0;
+#ifdef CONFIG_FC8050_DEBUG
 		printk("fc8050 chip id read error , so is_tdmb_probe = %d\n", is_tdmb_probe);
+#endif
 		return FC8050_RESULT_ERROR;
 	}
 	else
@@ -382,7 +384,7 @@ int8	tunerbb_drv_fc8050_init(void)
 
 	res = BBM_TUNER_SELECT(0, FC8050_TUNER, BAND3_TYPE);
 
-#if 0      //fc8050 <-> Host(MSM) °£ÀÇ Interface TEST¸¦ À§ÇÑ code
+#if 0      //fc8050 <-> Host(MSM) ê°„ì˜ Interface TESTë¥¼ ìœ„í•œ code
 /* test */	
 	for(i=0;i<5000;i++)
 	{
@@ -424,7 +426,9 @@ int8	tunerbb_drv_fc8050_init(void)
 
 	if(res)
 	{
+#ifdef CONFIG_FC8050_DEBUG
 		printk("[FC8050] BBM_TUNER_SELECT Error = (%d)\n", res);
+#endif
 		return FC8050_RESULT_ERROR; 
 	}
 	else
@@ -511,7 +515,7 @@ static fci_u16 tunerbb_drv_fc8050_rserror_count(fci_u16 *nframe)//for dummy chan
 	rs_ctrl |= 0x20;
 	BBM_WRITE(0, BBM_RS_CONTROL, rs_ctrl);
 
-	BBM_WORD_READ(0, BBM_RS_RT_BER_PER, &rt_nframe);	//½Ç½Ã°£À¸·Î count µÇ´Â frame ¼ö
+	BBM_WORD_READ(0, BBM_RS_RT_BER_PER, &rt_nframe);	//ì‹¤ì‹œê°„ìœ¼ë¡œ count ë˜ëŠ” frame ìˆ˜
 	//BBM_LONG_READ(0, BBM_RS_RT_ERR_SUM, &rt_esum);
 	BBM_WORD_READ(0, BBM_RS_RT_FAIL_CNT, &rt_rserror);
 
@@ -519,7 +523,7 @@ static fci_u16 tunerbb_drv_fc8050_rserror_count(fci_u16 *nframe)//for dummy chan
 	BBM_WRITE(0, BBM_RS_CONTROL, rs_ctrl);
 #endif
 
-	*nframe=rt_nframe; //½Ç½Ã°£À¸·Î count µÇ´Â frame ¼ö
+	*nframe=rt_nframe; //ì‹¤ì‹œê°„ìœ¼ë¡œ count ë˜ëŠ” frame ìˆ˜
 	return rt_rserror;
 }
 
@@ -561,8 +565,10 @@ int8	tunerbb_drv_fc8050_get_ber(struct broadcast_tdmb_sig_info *dmb_bb_info)
 	{
 		dmb_bb_info->msc_ber = 20000;
 		dmb_bb_info->tp_err_cnt = 255;
-		
+
+#ifdef CONFIG_FC8050_DEBUG
 		printk("is_tdmb_probe 0. so msc_ber is 20000, tp_err_cnt = 255. \n");
+#endif
 		return FC8050_RESULT_SUCCESS;
 	}
 		
@@ -591,7 +597,7 @@ int8	tunerbb_drv_fc8050_get_ber(struct broadcast_tdmb_sig_info *dmb_bb_info)
 	
 	if(serviceType[0] == FC8050_DMB || serviceType[0] == FC8050_VISUAL)
 	{
-		tp_err_cnt = tunerbb_drv_fc8050_rserror_count(&nframe); //½Ç½Ã°£ frame¼ö Ã¼Å©
+		tp_err_cnt = tunerbb_drv_fc8050_rserror_count(&nframe); //ì‹¤ì‹œê°„ frameìˆ˜ ì²´í¬
 		
 		if((dmb_bb_info->sync_lock == 0) || (tp_total_cnt == 0))
 		{
@@ -644,14 +650,14 @@ int8	tunerbb_drv_fc8050_get_ber(struct broadcast_tdmb_sig_info *dmb_bb_info)
 	}
 
 #if 0
-	//Ã¤³ÎÀº Àâ¾ÒÀ¸³ª (sync_status == 0x3f) frameÀÌ µé¾î¿ÀÁö ¾Ê´Â °æ¿ì(nframe == 0) - MBN V-Radio
+	//ì±„ë„ì€ ì¡ì•˜ìœ¼ë‚˜ (sync_status == 0x3f) frameì´ ë“¤ì–´ì˜¤ì§€ ì•ŠëŠ” ê²½ìš°(nframe == 0) - MBN V-Radio
 	if((sync_status==0x3f)&&(nframe==0))
 	{
-		//antenna levelÀ» 0À¸·Î ¸¸µë. 
+		//antenna levelì„ 0ìœ¼ë¡œ ë§Œë“¬.
 		dmb_bb_info->antenna_level = 0;
 	}
 
-	//antenna levelÀÌ 0ÀÌ¸é ¾àÀü°èÀÌ¹Ç·Î 5ºĞÁ¾·á¸¦ À§ÇØ dab_ok¸¦ 0À¸·Î ¸¸µë. 
+	//antenna levelì´ 0ì´ë©´ ì•½ì „ê³„ì´ë¯€ë¡œ 5ë¶„ì¢…ë£Œë¥¼ ìœ„í•´ dab_okë¥¼ 0ìœ¼ë¡œ ë§Œë“¬.
 	if(dmb_bb_info->antenna_level == 0)
 	{
 		dmb_bb_info->dab_ok = 0; 
@@ -1489,7 +1495,9 @@ static int8 tunerbb_drv_fc8050_check_overrun(uint8 op_mode)
 
 			fc8050_isr_interruptclear();
 
+#ifdef CONFIG_FC8050_DEBUG
 			printk("======== FC8050  OvernRun and Buffer Reset Done mask (0x%X) over (0x%X) =======\n", mask,mfoverStatus );
+#endif
 		}
 	}
 

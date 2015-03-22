@@ -32,6 +32,12 @@
 
 #include <trace/events/power.h>
 
+// Dynamic thermal control - By jollaman999
+#ifdef CONFIG_DYNAMIC_THERMAL_CONTROL
+extern bool cpufreq_max_changed_by_user;
+extern bool cpufreq_max_changed_by_msm_thermal;
+#endif
+
 /**
  * The "cpufreq driver" - the arch- or hardware-dependent low
  * level driver of CPUFreq support, and its spinlock. This lock
@@ -431,18 +437,62 @@ static ssize_t store_##file_name					\
 	if (ret)							\
 		return -EINVAL;						\
 									\
+	new_policy.min = new_policy.user_policy.min;			\
+	new_policy.max = new_policy.user_policy.max;			\
+									\
 	ret = sscanf(buf, "%u", &new_policy.object);			\
 	if (ret != 1)							\
 		return -EINVAL;						\
 									\
+	ret = cpufreq_driver->verify(&new_policy);			\
+	if (ret)							\
+		pr_err("cpufreq: Frequency verification failed\n");	\
+									\
+	policy->user_policy.min = new_policy.min;			\
+	policy->user_policy.max = new_policy.max;			\
+									\
 	ret = __cpufreq_set_policy(policy, &new_policy);		\
-	policy->user_policy.object = policy->object;			\
 									\
 	return ret ? ret : count;					\
 }
 
 store_one(scaling_min_freq, min);
+// Dynamic thermal control - By jollaman999
+#ifdef CONFIG_DYNAMIC_THERMAL_CONTROL
+static ssize_t store_scaling_max_freq
+(struct cpufreq_policy *policy, const char *buf, size_t count)
+{
+	unsigned int ret = -EINVAL;
+	struct cpufreq_policy new_policy;
+
+	ret = cpufreq_get_policy(&new_policy, policy->cpu);
+	if (ret)
+		return -EINVAL;
+
+	new_policy.min = new_policy.user_policy.min;
+	new_policy.max = new_policy.user_policy.max;
+
+	ret = sscanf(buf, "%u", &new_policy.max);
+	if (ret != 1)
+		return -EINVAL;
+
+	ret = cpufreq_driver->verify(&new_policy);
+	if (ret)
+		pr_err("cpufreq: Frequency verification failed\n");
+
+	policy->user_policy.min = new_policy.min;
+	policy->user_policy.max = new_policy.max;
+
+	ret = __cpufreq_set_policy(policy, &new_policy);
+
+	cpufreq_max_changed_by_user = true;
+	cpufreq_max_changed_by_msm_thermal = false;
+
+	return ret ? ret : count;
+}
+#else
 store_one(scaling_max_freq, max);
+#endif
 
 /**
  * show_cpuinfo_cur_freq - current CPU frequency as detected by hardware
@@ -863,6 +913,8 @@ static int cpufreq_add_dev_policy(unsigned int cpu,
 
 			spin_lock_irqsave(&cpufreq_driver_lock, flags);
 			cpumask_copy(managed_policy->cpus, policy->cpus);
+			cpumask_and(managed_policy->cpus,
+					managed_policy->cpus, cpu_online_mask);
 			per_cpu(cpufreq_cpu_data, cpu) = managed_policy;
 			spin_unlock_irqrestore(&cpufreq_driver_lock, flags);
 
@@ -1085,6 +1137,13 @@ static int cpufreq_add_dev(struct device *dev, struct subsys_interface *sif)
 		pr_debug("initialization failed\n");
 		goto err_unlock_policy;
 	}
+
+	/*
+	 * affected cpus must always be the one, which are online. We aren't
+	 * managing offline cpus here.
+	 */
+	cpumask_and(policy->cpus, policy->cpus, cpu_online_mask);
+
 	policy->user_policy.min = policy->min;
 	policy->user_policy.max = policy->max;
 
@@ -1801,7 +1860,8 @@ static int __cpufreq_set_policy(struct cpufreq_policy *data,
 	memcpy(&policy->cpuinfo, &data->cpuinfo,
 				sizeof(struct cpufreq_cpuinfo));
 
-	if (policy->min > data->max || policy->max < data->min) {
+	if (policy->min > data->user_policy.max
+		|| policy->max < data->user_policy.min) {
 		ret = -EINVAL;
 		goto error_out;
 	}

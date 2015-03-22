@@ -150,7 +150,7 @@ static struct kobject *cores_kobj;
 // Overclock
 // DCVS_MAX_NUM_FREQS = 15+(Overclock Table Values)
 #ifdef CONFIG_CPU_OVERCLOCK
-#define DCVS_MAX_NUM_FREQS 22
+#define DCVS_MAX_NUM_FREQS 19
 #else
 #define DCVS_MAX_NUM_FREQS 15
 #endif /* CONFIG_CPU_OVERCLOCK */
